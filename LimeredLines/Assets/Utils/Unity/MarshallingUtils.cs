@@ -1,0 +1,25 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace Assets.Utils.Unity
+{
+    public static class MarshallingUtils
+    {
+        public static void MarshalUnmananagedArray2Struct<T>(IntPtr unmanagedArray, int length, out T[] mangagedArray)
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            mangagedArray = new T[length];
+
+            for (var i = 0; i < mangagedArray.Length; i++)
+            {
+                mangagedArray[i] = (T)Marshal.PtrToStructure(new IntPtr(unmanagedArray.ToInt64() + i * size), typeof(T));
+            }
+        }
+
+        [DllImport("LimeredVO", EntryPoint = "clearXYArray")]
+        public static extern void ClearXYArray(IntPtr p);
+
+        [DllImport("LimeredVO", EntryPoint = "clearByteArray")]
+        public static extern void ClearByteArray(IntPtr ptr);
+    }
+}
